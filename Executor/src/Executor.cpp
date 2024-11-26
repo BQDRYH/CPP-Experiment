@@ -1,5 +1,8 @@
 #include "Executor.h"
 
+namespace adas
+{
+
 std::string Executor::GetCurrentStatus()
 {
     char headingChar = DirectionToChar(heading);
@@ -70,3 +73,5 @@ void Executor::TurnRight()
 {
     heading = static_cast<Direction>((heading + 1) % 4);  // 右转即顺时针90度
 }
+
+}  // namespace adas
