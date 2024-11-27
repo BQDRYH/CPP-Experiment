@@ -5,59 +5,120 @@
 namespace adas
 {
 
-TEST(ExecutorTest, test1)
+// 默认初始化测试
+TEST(ExecutorTest, should_return_default_pose_when_without_init_and_command)
 {
-    // 测试1: 默认初始化
-    Executor executor1;
-    ASSERT_EQ(executor1.GetCurrentStatus(), "(0, 0, N)");
+    Executor executor;
+    ASSERT_EQ(executor.GetCurrentStatus(), "(0, 0, N)");
 }
 
-TEST(ExecutorTest, test2)
+// 移动指令（M）测试用例
+TEST(ExecutorTest, should_return_x_plus_1_given_command_is_M_and_facing_is_E)
 {
-    // 测试2: 指令 "M"
-    Executor executor2(0, 0, 'N');
-    executor2.ExecuteInstructions("M");
-    ASSERT_EQ(executor2.GetCurrentStatus(), "(0, 1, N)");
+    Executor executor(0, 0, 'E');
+    executor.ExecuteInstructions("M");
+    ASSERT_EQ(executor.GetCurrentStatus(), "(1, 0, E)");
 }
 
-TEST(ExecutorTest, test3)
+TEST(ExecutorTest, should_return_x_minus_1_given_command_is_M_and_facing_is_W)
 {
-    // 测试3: 指令 "L"
-    Executor executor3(0, 0, 'N');
-    executor3.ExecuteInstructions("L");
-    ASSERT_EQ(executor3.GetCurrentStatus(), "(0, 0, W)");
+    Executor executor(0, 0, 'W');
+    executor.ExecuteInstructions("M");
+    ASSERT_EQ(executor.GetCurrentStatus(), "(-1, 0, W)");
 }
 
-TEST(ExecutorTest, test4)
+TEST(ExecutorTest, should_return_y_plus_1_given_command_is_M_and_facing_is_N)
 {
-    // 测试4: 指令 "R"
-    Executor executor4(0, 0, 'N');
-    executor4.ExecuteInstructions("R");
-    ASSERT_EQ(executor4.GetCurrentStatus(), "(0, 0, E)");
+    Executor executor(0, 0, 'N');
+    executor.ExecuteInstructions("M");
+    ASSERT_EQ(executor.GetCurrentStatus(), "(0, 1, N)");
 }
 
-TEST(ExecutorTest, test5)
+TEST(ExecutorTest, should_return_y_minus_1_given_command_is_M_and_facing_is_S)
 {
-    // 测试5: 指令 "MMR"
-    Executor executor5(1, 0, 'E');  // 自定义初始位置
-    executor5.ExecuteInstructions("MMR");
-    ASSERT_EQ(executor5.GetCurrentStatus(), "(3, 0, S)");
+    Executor executor(0, 0, 'S');
+    executor.ExecuteInstructions("M");
+    ASSERT_EQ(executor.GetCurrentStatus(), "(0, -1, S)");
 }
 
-TEST(ExecutorTest, test6)
+// 左转指令（L）测试用例
+TEST(ExecutorTest, should_return_facing_N_given_command_is_L_and_facing_is_E)
 {
-    // 测试6: 指令 "MMMLM"
-    Executor executor6(2, 3, 'W');  // 自定义初始位置
-    executor6.ExecuteInstructions("MMMLM");
-    ASSERT_EQ(executor6.GetCurrentStatus(), "(-1, 2, S)");
+    Executor executor(0, 0, 'E');
+    executor.ExecuteInstructions("L");
+    ASSERT_EQ(executor.GetCurrentStatus(), "(0, 0, N)");
 }
 
-TEST(ExecutorTest, test7)
+TEST(ExecutorTest, should_return_facing_W_given_command_is_L_and_facing_is_N)
 {
-    // 测试7: 指令 "RMMMLML"
-    Executor executor7(0, 0, 'S');  // 自定义初始位置
-    executor7.ExecuteInstructions("RMMMLML");
-    ASSERT_EQ(executor7.GetCurrentStatus(), "(-3, -1, E)");
+    Executor executor(0, 0, 'N');
+    executor.ExecuteInstructions("L");
+    ASSERT_EQ(executor.GetCurrentStatus(), "(0, 0, W)");
+}
+
+TEST(ExecutorTest, should_return_facing_S_given_command_is_L_and_facing_is_W)
+{
+    Executor executor(0, 0, 'W');
+    executor.ExecuteInstructions("L");
+    ASSERT_EQ(executor.GetCurrentStatus(), "(0, 0, S)");
+}
+
+TEST(ExecutorTest, should_return_facing_E_given_command_is_L_and_facing_is_S)
+{
+    Executor executor(0, 0, 'S');
+    executor.ExecuteInstructions("L");
+    ASSERT_EQ(executor.GetCurrentStatus(), "(0, 0, E)");
+}
+
+// 右转指令（R）测试用例
+TEST(ExecutorTest, should_return_facing_S_given_command_is_R_and_facing_is_E)
+{
+    Executor executor(0, 0, 'E');
+    executor.ExecuteInstructions("R");
+    ASSERT_EQ(executor.GetCurrentStatus(), "(0, 0, S)");
+}
+
+TEST(ExecutorTest, should_return_facing_N_given_command_is_R_and_facing_is_S)
+{
+    Executor executor(0, 0, 'S');
+    executor.ExecuteInstructions("R");
+    ASSERT_EQ(executor.GetCurrentStatus(), "(0, 0, W)");
+}
+
+TEST(ExecutorTest, should_return_facing_E_given_command_is_R_and_facing_is_W)
+{
+    Executor executor(0, 0, 'W');
+    executor.ExecuteInstructions("R");
+    ASSERT_EQ(executor.GetCurrentStatus(), "(0, 0, N)");
+}
+
+TEST(ExecutorTest, should_return_facing_W_given_command_is_R_and_facing_is_N)
+{
+    Executor executor(0, 0, 'N');
+    executor.ExecuteInstructions("R");
+    ASSERT_EQ(executor.GetCurrentStatus(), "(0, 0, E)");
+}
+
+// 组合指令测试用例
+TEST(ExecutorTest, should_handle_multiple_instructions_correctly)
+{
+    Executor executor(1, 0, 'E');
+    executor.ExecuteInstructions("MMR");
+    ASSERT_EQ(executor.GetCurrentStatus(), "(3, 0, S)");
+}
+
+TEST(ExecutorTest, should_handle_multiple_instructions_correctly_2)
+{
+    Executor executor(2, 3, 'W');
+    executor.ExecuteInstructions("MMMLM");
+    ASSERT_EQ(executor.GetCurrentStatus(), "(-1, 2, S)");
+}
+
+TEST(ExecutorTest, should_handle_multiple_instructions_correctly_3)
+{
+    Executor executor(0, 0, 'S');
+    executor.ExecuteInstructions("RMMMLML");
+    ASSERT_EQ(executor.GetCurrentStatus(), "(-3, -1, E)");
 }
 
 }  // namespace adas
