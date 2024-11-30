@@ -1,44 +1,21 @@
 #pragma once
 
-#include <stdexcept>
-#include <string>
+#include "Executor.hpp"
 
 namespace adas
 {
 
-class Executor
+class ExecutorImpl final : public Executor
 {
 public:
     // 构造函数，初始化车的位置和朝向
-    Executor(int x = 0, int y = 0, char heading = 'N')
-    {
-        this->x = x;
-        this->y = y;
-        // 将字符朝向转为枚举
-        switch (heading) {
-        case 'N':
-            this->heading = N;
-            break;
-        case 'E':
-            this->heading = E;
-            break;
-        case 'S':
-            this->heading = S;
-            break;
-        case 'W':
-            this->heading = W;
-            break;
-        default:
-            throw std::invalid_argument("Invalid heading");
-        }
-        this->isAccelerating = false;
-    }
+    ExecutorImpl(int x = 0, int y = 0, char heading = 'N');
 
     // 执行批量指令
-    void ExecuteInstructions(const std::string& instructions);
+    void ExecuteInstructions(const std::string& instructions) override;
 
     // 获取当前的坐标和朝向
-    std::string GetCurrentStatus();
+    std::string GetCurrentStatus() override;
 
 private:
     // 枚举表示四个方向

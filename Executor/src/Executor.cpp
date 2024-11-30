@@ -1,15 +1,39 @@
-#include "Executor.h"
+#include "ExecutorImpl.hpp"
 
 namespace adas
 {
 
-std::string Executor::GetCurrentStatus()
+ExecutorImpl::ExecutorImpl(int x, int y, char heading)
+{
+    this->x = x;
+    this->y = y;
+    // 将字符朝向转为枚举
+    switch (heading) {
+    case 'N':
+        this->heading = N;
+        break;
+    case 'E':
+        this->heading = E;
+        break;
+    case 'S':
+        this->heading = S;
+        break;
+    case 'W':
+        this->heading = W;
+        break;
+    default:
+        throw std::invalid_argument("Invalid heading");
+    }
+    this->isAccelerating = false;
+}
+
+std::string ExecutorImpl::GetCurrentStatus()
 {
     char headingChar = DirectionToChar(heading);
     return "(" + std::to_string(x) + ", " + std::to_string(y) + ", " + headingChar + ")";
 }
 
-void Executor::ExecuteInstructions(const std::string& instructions)
+void ExecutorImpl::ExecuteInstructions(const std::string& instructions)
 {
     for (char command : instructions) {
         switch (command) {
@@ -40,7 +64,7 @@ void Executor::ExecuteInstructions(const std::string& instructions)
     }
 }
 
-char Executor::DirectionToChar(Direction dir)
+char ExecutorImpl::DirectionToChar(Direction dir)
 {
     switch (dir) {
     case N:
@@ -56,7 +80,7 @@ char Executor::DirectionToChar(Direction dir)
     }
 }
 
-void Executor::MoveForward()
+void ExecutorImpl::MoveForward()
 {
     switch (heading) {
     case N:
@@ -76,17 +100,17 @@ void Executor::MoveForward()
     }
 }
 
-void Executor::TurnLeft()
+void ExecutorImpl::TurnLeft()
 {
     heading = static_cast<Direction>((heading + 3) % 4);  // 左转即逆时针90度
 }
 
-void Executor::TurnRight()
+void ExecutorImpl::TurnRight()
 {
     heading = static_cast<Direction>((heading + 1) % 4);  // 右转即顺时针90度
 }
 
-void Executor::ToggleAcceleration()
+void ExecutorImpl::ToggleAcceleration()
 {
     isAccelerating = !isAccelerating;
 }
