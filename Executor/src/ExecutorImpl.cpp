@@ -7,7 +7,6 @@ ExecutorImpl::ExecutorImpl(int x, int y, char heading)
 {
     this->x = x;
     this->y = y;
-    // 将字符朝向转为枚举
     switch (heading) {
     case 'N':
         this->heading = N;
@@ -36,30 +35,38 @@ std::string ExecutorImpl::GetCurrentStatus()
 void ExecutorImpl::ExecuteInstructions(const std::string& instructions)
 {
     for (char command : instructions) {
+        std::unique_ptr<ICommand> cmd;
         switch (command) {
         case 'M':
             if (isAccelerating) {
-                MoveForward();
+                cmd = std::make_unique<MoveCommand>();
+                cmd->DoOperate(*this);
             }
-            MoveForward();
+            cmd = std::make_unique<MoveCommand>();
+
             break;
         case 'L':
             if (isAccelerating) {
-                MoveForward();
+                cmd = std::make_unique<MoveCommand>();
+                cmd->DoOperate(*this);
             }
-            TurnLeft();
+            cmd = std::make_unique<TurnLeftCommand>();
             break;
         case 'R':
             if (isAccelerating) {
-                MoveForward();
+                cmd = std::make_unique<MoveCommand>();
+                cmd->DoOperate(*this);
             }
-            TurnRight();
+            cmd = std::make_unique<TurnRightCommand>();
             break;
         case 'F':
             ToggleAcceleration();
             break;
         default:
             throw std::invalid_argument("Invalid command");
+        }
+        if (cmd) {
+            cmd->DoOperate(*this);
         }
     }
 }
@@ -85,16 +92,16 @@ void ExecutorImpl::MoveForward()
     switch (heading) {
     case N:
         y++;
-        break;  // 向北走，y增加
+        break;
     case S:
         y--;
-        break;  // 向南走，y减少
+        break;
     case E:
         x++;
-        break;  // 向东走，x增加
+        break;
     case W:
         x--;
-        break;  // 向西走，x减少
+        break;
     default:
         throw std::logic_error("Invalid direction for move");
     }
@@ -102,17 +109,32 @@ void ExecutorImpl::MoveForward()
 
 void ExecutorImpl::TurnLeft()
 {
-    heading = static_cast<Direction>((heading + 3) % 4);  // 左转即逆时针90度
+    heading = static_cast<Direction>((heading + 3) % 4);
 }
 
 void ExecutorImpl::TurnRight()
 {
-    heading = static_cast<Direction>((heading + 1) % 4);  // 右转即顺时针90度
+    heading = static_cast<Direction>((heading + 1) % 4);
 }
 
 void ExecutorImpl::ToggleAcceleration()
 {
     isAccelerating = !isAccelerating;
+}
+
+void ExecutorImpl::MoveCommand::DoOperate(ExecutorImpl& executor) const noexcept
+{
+    executor.MoveForward();
+}
+
+void ExecutorImpl::TurnLeftCommand::DoOperate(ExecutorImpl& executor) const noexcept
+{
+    executor.TurnLeft();
+}
+
+void ExecutorImpl::TurnRightCommand::DoOperate(ExecutorImpl& executor) const noexcept
+{
+    executor.TurnRight();
 }
 
 }  // namespace adas

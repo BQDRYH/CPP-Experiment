@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Executor.hpp"
+#include "ICommand.hpp"
 
 namespace adas
 {
@@ -34,6 +35,24 @@ private:
 
     // 将方向枚举转为字符
     char DirectionToChar(Direction dir);
+
+    class MoveCommand final : public ICommand
+    {
+    public:
+        void DoOperate(ExecutorImpl& executor) const noexcept override;
+    };
+
+    class TurnLeftCommand final : public ICommand
+    {
+    public:
+        void DoOperate(ExecutorImpl& executor) const noexcept override;
+    };
+
+    class TurnRightCommand final : public ICommand
+    {
+    public:
+        void DoOperate(ExecutorImpl& executor) const noexcept override;
+    };
 
     // 前进1格或2格（根据加速状态）
     void MoveForward();
