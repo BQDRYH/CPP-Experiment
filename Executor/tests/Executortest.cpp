@@ -168,7 +168,7 @@ TEST(ExecutorTest, should_handle_acceleration_and_commands_correctly_2)
 {
     Executor executor(0, 0, 'W');
     executor.ExecuteInstructions("FRMFM");
-    ASSERT_EQ(executor.GetCurrentStatus(), "(1, 3, N)");  // 验证加速状态下的组合指令和取消加速
+    ASSERT_EQ(executor.GetCurrentStatus(), "(-1, 3, N)");  // 验证加速状态下的组合指令和取消加速
 }
 
 }  // namespace adas

@@ -22,18 +22,14 @@ void Executor::ExecuteInstructions(const std::string& instructions)
         case 'L':
             if (isAccelerating) {
                 MoveForward();
-                TurnLeft();
-            } else {
-                TurnLeft();
             }
+            TurnLeft();
             break;
         case 'R':
             if (isAccelerating) {
                 MoveForward();
-                TurnRight();
-            } else {
-                TurnRight();
             }
+            TurnRight();
             break;
         case 'F':
             ToggleAcceleration();
