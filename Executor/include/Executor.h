@@ -31,6 +31,7 @@ public:
         default:
             throw std::invalid_argument("Invalid heading");
         }
+        this->isAccelerating = false;
     }
 
     // 执行批量指令
@@ -52,10 +53,12 @@ private:
 
     Direction heading;  // 车的朝向
 
+    bool isAccelerating;  // 是否处于加速状态
+
     // 将方向枚举转为字符
     char DirectionToChar(Direction dir);
 
-    // 前进1格
+    // 前进1格或2格（根据加速状态）
     void MoveForward();
 
     // 左转90度
@@ -63,6 +66,9 @@ private:
 
     // 右转90度
     void TurnRight();
+
+    // 切换加速状态
+    void ToggleAcceleration();
 };
 
 }  // namespace adas

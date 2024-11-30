@@ -14,13 +14,29 @@ void Executor::ExecuteInstructions(const std::string& instructions)
     for (char command : instructions) {
         switch (command) {
         case 'M':
+            if (isAccelerating) {
+                MoveForward();
+            }
             MoveForward();
             break;
         case 'L':
-            TurnLeft();
+            if (isAccelerating) {
+                MoveForward();
+                TurnLeft();
+            } else {
+                TurnLeft();
+            }
             break;
         case 'R':
-            TurnRight();
+            if (isAccelerating) {
+                MoveForward();
+                TurnRight();
+            } else {
+                TurnRight();
+            }
+            break;
+        case 'F':
+            ToggleAcceleration();
             break;
         default:
             throw std::invalid_argument("Invalid command");
@@ -72,6 +88,11 @@ void Executor::TurnLeft()
 void Executor::TurnRight()
 {
     heading = static_cast<Direction>((heading + 1) % 4);  // 右转即顺时针90度
+}
+
+void Executor::ToggleAcceleration()
+{
+    isAccelerating = !isAccelerating;
 }
 
 }  // namespace adas

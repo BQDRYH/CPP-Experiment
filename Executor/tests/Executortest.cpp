@@ -121,4 +121,54 @@ TEST(ExecutorTest, should_handle_multiple_instructions_correctly_3)
     ASSERT_EQ(executor.GetCurrentStatus(), "(-3, -1, E)");
 }
 
+// 加速指令（F）测试用例
+TEST(ExecutorTest, should_toggle_acceleration_with_F)
+{
+    Executor executor(0, 0, 'N');
+    executor.ExecuteInstructions("F");
+    executor.ExecuteInstructions("M");
+    executor.ExecuteInstructions("F");
+    executor.ExecuteInstructions("M");
+    ASSERT_EQ(executor.GetCurrentStatus(), "(0, 3, N)");  // 验证加速后前进2格，取消加速后前进1格
+}
+
+// 加速状态下的移动指令（M）测试用例
+TEST(ExecutorTest, should_move_forward_2_steps_in_acceleration_mode)
+{
+    Executor executor(0, 0, 'E');
+    executor.ExecuteInstructions("FM");
+    ASSERT_EQ(executor.GetCurrentStatus(), "(2, 0, E)");  // 验证加速状态下前进2格
+}
+
+// 加速状态下的左转指令（L）测试用例
+TEST(ExecutorTest, should_move_forward_and_turn_left_in_acceleration_mode)
+{
+    Executor executor(0, 0, 'E');
+    executor.ExecuteInstructions("FL");
+    ASSERT_EQ(executor.GetCurrentStatus(), "(1, 0, N)");  // 验证加速状态下先前进1格，然后左转90度
+}
+
+// 加速状态下的右转指令（R）测试用例
+TEST(ExecutorTest, should_move_forward_and_turn_right_in_acceleration_mode)
+{
+    Executor executor(0, 0, 'E');
+    executor.ExecuteInstructions("FR");
+    ASSERT_EQ(executor.GetCurrentStatus(), "(1, 0, S)");  // 验证加速状态下先前进1格，然后右转90度
+}
+
+// 加速状态下的组合指令测试用例
+TEST(ExecutorTest, should_handle_acceleration_and_commands_correctly)
+{
+    Executor executor(0, 0, 'N');
+    executor.ExecuteInstructions("FMML");
+    ASSERT_EQ(executor.GetCurrentStatus(), "(0, 5, W)");  // 验证加速状态下的组合指令
+}
+
+TEST(ExecutorTest, should_handle_acceleration_and_commands_correctly_2)
+{
+    Executor executor(0, 0, 'W');
+    executor.ExecuteInstructions("FRMFM");
+    ASSERT_EQ(executor.GetCurrentStatus(), "(1, 3, N)");  // 验证加速状态下的组合指令和取消加速
+}
+
 }  // namespace adas
