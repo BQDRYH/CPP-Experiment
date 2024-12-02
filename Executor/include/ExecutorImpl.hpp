@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Executor.hpp"
-#include "ICommand.hpp"
 
 namespace adas
 {
@@ -36,6 +35,15 @@ private:
     // 将方向枚举转为字符
     char DirectionToChar(Direction dir);
 
+    // 虚基类
+    class ICommand
+    {
+    public:
+        virtual ~ICommand() = default;
+        virtual void DoOperate(ExecutorImpl& executor) const noexcept = 0;
+    };
+
+    // 方法封装到类里
     class MoveCommand final : public ICommand
     {
     public:
