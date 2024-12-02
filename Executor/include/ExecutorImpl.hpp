@@ -30,7 +30,7 @@ private:
 
     Direction heading;  // 车的朝向
 
-    bool isAccelerating;  // 是否处于加速状态
+    bool isFast;  // 是否处于加速状态
 
     // 将方向枚举转为字符
     char DirectionToChar(Direction dir);
@@ -62,6 +62,12 @@ private:
         void DoOperate(ExecutorImpl& executor) const noexcept override;
     };
 
+    class FastCommand final : public ICommand
+    {
+    public:
+        void DoOperate(ExecutorImpl& executor) const noexcept override;
+    };
+
     // 前进1格或2格（根据加速状态）
     void MoveForward();
 
@@ -72,7 +78,9 @@ private:
     void TurnRight();
 
     // 切换加速状态
-    void ToggleAcceleration();
+    void ToggleFast();
+    // 判断是否处于加速状态
+    bool IsFast();
 };
 
 }  // namespace adas

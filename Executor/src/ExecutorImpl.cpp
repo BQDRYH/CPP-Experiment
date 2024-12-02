@@ -23,7 +23,7 @@ ExecutorImpl::ExecutorImpl(int x, int y, char heading)
     default:
         throw std::invalid_argument("Invalid heading");
     }
-    this->isAccelerating = false;
+    this->isFast = false;
 }
 
 std::string ExecutorImpl::GetCurrentStatus()
@@ -38,29 +38,16 @@ void ExecutorImpl::ExecuteInstructions(const std::string& instructions)
         std::unique_ptr<ICommand> cmd;
         switch (command) {
         case 'M':
-            if (isAccelerating) {
-                cmd = std::make_unique<MoveCommand>();
-                cmd->DoOperate(*this);
-            }
             cmd = std::make_unique<MoveCommand>();
-
             break;
         case 'L':
-            if (isAccelerating) {
-                cmd = std::make_unique<MoveCommand>();
-                cmd->DoOperate(*this);
-            }
             cmd = std::make_unique<TurnLeftCommand>();
             break;
         case 'R':
-            if (isAccelerating) {
-                cmd = std::make_unique<MoveCommand>();
-                cmd->DoOperate(*this);
-            }
             cmd = std::make_unique<TurnRightCommand>();
             break;
         case 'F':
-            ToggleAcceleration();
+            cmd = std::make_unique<FastCommand>();
             break;
         default:
             throw std::invalid_argument("Invalid command");
@@ -117,24 +104,43 @@ void ExecutorImpl::TurnRight()
     heading = static_cast<Direction>((heading + 1) % 4);
 }
 
-void ExecutorImpl::ToggleAcceleration()
+void ExecutorImpl::ToggleFast()
 {
-    isAccelerating = !isAccelerating;
+    isFast = !isFast;
+}
+
+bool ExecutorImpl::IsFast()
+{
+    return isFast;
 }
 
 void ExecutorImpl::MoveCommand::DoOperate(ExecutorImpl& executor) const noexcept
 {
+    if (executor.IsFast()) {
+        executor.MoveForward();
+    }
     executor.MoveForward();
 }
 
 void ExecutorImpl::TurnLeftCommand::DoOperate(ExecutorImpl& executor) const noexcept
 {
+    if (executor.IsFast()) {
+        executor.MoveForward();
+    }
     executor.TurnLeft();
 }
 
 void ExecutorImpl::TurnRightCommand::DoOperate(ExecutorImpl& executor) const noexcept
 {
+    if (executor.IsFast()) {
+        executor.MoveForward();
+    }
     executor.TurnRight();
+}
+
+void ExecutorImpl::FastCommand::DoOperate(ExecutorImpl& executor) const noexcept
+{
+    executor.ToggleFast();
 }
 
 }  // namespace adas
